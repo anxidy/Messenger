@@ -3,6 +3,7 @@ package ru.anxidy.entities;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "messages")
@@ -11,7 +12,7 @@ public class Message {
     @GeneratedValue
     private long id;
 
-    @Column(length = 511)
+    @Column(length = 500)
     private String messageBody;
 
     @Column
@@ -21,17 +22,17 @@ public class Message {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Account sender;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private Account receiver;
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    private Chat chat;
 
     public Message() {
     }
 
-    public Message(String messageBody, Date time, Account sender, Account receiver) {
+    public Message(String messageBody, Date time, Account sender, Chat chat) {
         this.messageBody = messageBody;
         this.time = time;
         this.sender = sender;
-        this.receiver = receiver;
+        this.chat = chat;
     }
 
     public String getMessageBody() {
@@ -58,12 +59,12 @@ public class Message {
         this.sender = sender;
     }
 
-    public Account getReceiver() {
-        return receiver;
+    public Chat getChat() {
+        return chat;
     }
 
-    public void setReceiver(Account receiver) {
-        this.receiver = receiver;
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
 }
 

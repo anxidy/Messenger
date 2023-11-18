@@ -5,6 +5,9 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.anxidy.entities.Account;
+import ru.anxidy.entities.Chat;
+
+import java.util.List;
 
 @Repository
 public class AccountsDAO {
@@ -22,7 +25,7 @@ public class AccountsDAO {
         manager.persist(account);
     }
 
-    public Account findById(int id) {
+    public Account findById(long id) {
         return manager.find(Account.class, id);
     }
 
@@ -37,5 +40,11 @@ public class AccountsDAO {
                 .setParameter("l", login)
                 .setParameter("p", password)
                 .getSingleResult();
+    }
+
+    public List<Chat> getChats(long userId) {
+        return manager.createQuery("select a from Account a join a.chats c where c.id =:uid", Chat.class)
+                .setParameter("uid", userId)
+                .getResultList();
     }
 }

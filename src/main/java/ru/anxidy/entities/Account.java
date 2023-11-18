@@ -2,6 +2,11 @@ package ru.anxidy.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -15,6 +20,10 @@ public class Account {
 
     @Column(length = 32, nullable = false)
     private String password;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private Set<Chat> chats = new HashSet<>();
 
     public Account() {
     }
@@ -46,5 +55,13 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(Set<Chat> chats) {
+        this.chats = chats;
     }
 }
