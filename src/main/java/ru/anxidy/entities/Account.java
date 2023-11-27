@@ -1,11 +1,13 @@
 package ru.anxidy.entities;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
+import static jakarta.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "accounts")
@@ -21,9 +23,8 @@ public class Account {
     @Column(length = 32, nullable = false)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id")
-    private Set<Chat> chats = new HashSet<>();
+    @ManyToMany(cascade = ALL)
+    private final Set<Chat> chats = new HashSet<>();
 
     public Account() {
     }
@@ -35,10 +36,6 @@ public class Account {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getLogin() {
@@ -58,10 +55,11 @@ public class Account {
     }
 
     public Set<Chat> getChats() {
-        return chats;
+        return Collections.unmodifiableSet(chats);
     }
 
-    public void setChats(Set<Chat> chats) {
-        this.chats = chats;
+    public void addChat(@NonNull Chat chat, Boolean calledFromAddReceiver) {
+        if (!calledFromAddReceiver) chat.addReceiver(this, true);
+        chats.add(chat);
     }
 }

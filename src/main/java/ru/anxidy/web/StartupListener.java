@@ -22,7 +22,6 @@ public class StartupListener {
 
     private final AccountsDAO accountsDAO;
     private final MessagesDAO messagesDAO;
-
     private final ChatDAO chatDAO;
 
     @Autowired
@@ -36,33 +35,38 @@ public class StartupListener {
     @Transactional
     public void handleContextRefreshEvent(ContextRefreshedEvent event) {
 
-        Account testAccount1 = new Account("login", "12345");
-        Account testAccount2 = new Account("log", "12234");
+        Account testAccount = new Account("login", "12345");
 
         try {
             accountsDAO.findByLogin("login");
         } catch (NoResultException notFound) {
-            accountsDAO.create(testAccount1);
+            accountsDAO.create(testAccount);
+            List<Account> receivers = new ArrayList<>();
 
-        }
+            for (int i = 1; i < 10; i++) {
+                Account account = new Account("login" + i, "12345");
+                accountsDAO.create(account);
+                receivers.add(account);
+            }
 
-        try {
-            accountsDAO.findByLogin("log");
-        } catch (NoResultException notFound) {
-            accountsDAO.create(testAccount2);
-        }
+            for (Account account : receivers) {
+                ArrayList <Account> dialogue = new ArrayList<>();
+                dialogue.add(testAccount);
+                dialogue.add(account);
 
-        List<Account> receivers = new ArrayList<>();
-        receivers.add(testAccount1);
-        receivers.add(testAccount2);
+                Chat testChat = new Chat(account.getLogin(), dialogue);
+                chatDAO.create(testChat);
 
-        try {
-            chatDAO.findById(1);
-        } catch (NoResultException notFound) {
-            Chat testChat = new Chat("testChat", receivers);
+                Message message = new Message("Hi!", new Date(), testAccount, testChat);
+                messagesDAO.create(message);
+            }
+            receivers.add(testAccount);
+
+            Chat testChat = new Chat("Group chat", receivers);
             chatDAO.create(testChat);
+
             for (int i = 0; i < 10; i++) {
-                Message message = new Message("test", new Date(), testAccount1, testChat);
+                Message message = new Message("test", new Date(), testAccount, testChat);
                 messagesDAO.create(message);
             }
         }

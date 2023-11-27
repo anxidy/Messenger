@@ -43,7 +43,7 @@ public class AccountsDAO {
     }
 
     public List<Chat> getChats(long userId) {
-        return manager.createQuery("select a from Account a join a.chats c where c.id =:uid", Chat.class)
+        return manager.createQuery("select c from Chat c join c.receivers r where r.id =:uid", Chat.class)
                 .setParameter("uid", userId)
                 .getResultList();
     }

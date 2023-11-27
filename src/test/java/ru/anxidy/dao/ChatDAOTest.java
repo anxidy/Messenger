@@ -45,11 +45,11 @@ public class ChatDAOTest {
         List<Account> foundList = setup.getChatDao().getChatMembers(1);
 
         int i = 0;
-        for (Account found : foundList) {
-            assertEquals(found.getLogin(), setup.getAccountList().get(i).getLogin());
+        for (Account target : setup.getAccountList()) {
+            System.out.println(target.getLogin());
+            assertEquals(target.getLogin(), foundList.get(i).getLogin());
             i++;
         }
-
     }
 
     @Test
@@ -57,8 +57,9 @@ public class ChatDAOTest {
         List<Message> foundList = setup.getChatDao().getChatMessages(1);
 
         int i = 0;
-        for (Message found : foundList) {
-            assertEquals(found.getMessageBody(), setup.getMessagesList().get(i).getMessageBody());
+        for (Message target : setup.getMessagesList()) {
+            System.out.println(target.getMessageBody());
+            assertEquals(target.getMessageBody(), foundList.get(i).getMessageBody());
             i++;
         }
     }

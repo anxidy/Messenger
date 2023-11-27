@@ -31,7 +31,7 @@ public class ChatDAO {
     }
 
     public List<Account> getChatMembers(int chatId) {
-        return manager.createQuery("select r from Account r join r.chats c where c.id =:cid", Account.class)
+        return manager.createQuery("select r from Chat c join c.receivers r where c.id =:cid", Account.class)
                 .setParameter("cid", chatId)
                 .getResultList();
     }

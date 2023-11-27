@@ -45,6 +45,7 @@ public class MessagesDAOTest {
 
         int i = 0;
         for (Message message : found) {
+            System.out.println(message.getMessageBody());
             assertEquals(message.getMessageBody(), setup.getMessagesList().get(i).getMessageBody());
             i++;
         }

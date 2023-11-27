@@ -2,6 +2,7 @@ package ru.anxidy.web;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,8 +10,8 @@ import ru.anxidy.entities.Account;
 import ru.anxidy.entities.Chat;
 import ru.anxidy.entities.Message;
 
-import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class ChatController {
@@ -21,12 +22,15 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @GetMapping(path = "/chat_")
-    public String chat(URL url) {
+    @GetMapping(path = "/chat")
+    public String chat(@RequestParam int ch,
+                       ModelMap model) {
         try {
-            StringBuilder str = new StringBuilder(url.getPath());
-            int chatId = Integer.parseInt(str.substring(str.indexOf("_")));
-            chatService.getChatMessages(chatId);
+            Chat chat = chatService.findChat(ch);
+            List<Message> messages = chatService.getChatMessages(ch);
+
+            model.addAttribute("messages", messages);
+            model.addAttribute("chat", chat);
 
             return "chat";
         } catch (Exception e) {
@@ -34,19 +38,25 @@ public class ChatController {
         }
     }
 
-    @PostMapping(path = "/post_message")
+    @PostMapping(path = "/chat")
     public String postMessage(HttpSession session,
                               @RequestParam String messageBody,
-                              URL url) {
+                              @RequestParam int ch,
+                              ModelMap model
+    ) {
         try {
-            StringBuilder str = new StringBuilder(url.getPath());
-            int chatId = Integer.parseInt(str.substring(str.indexOf("_")));
             long accountId = (long) session.getAttribute("accountId");
             Account sender = chatService.getSender(accountId);
-            Chat chat = chatService.findChat(chatId);
+            Chat chat = chatService.findChat(ch);
             Message message = new Message(messageBody, new Date(), sender, chat);
 
             chatService.postMessage(message);
+
+            List<Message> messages = chatService.getChatMessages(ch);
+
+            model.addAttribute("messages", messages);
+            model.addAttribute("chat", chat);
+
             return "chat";
         } catch (Exception e) {
             return "mainPage";

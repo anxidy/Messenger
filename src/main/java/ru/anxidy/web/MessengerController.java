@@ -27,7 +27,6 @@ public class MessengerController {
 
             return "messenger";
         } catch (Exception e) {
-            e.printStackTrace();
             return "mainPage";
         }
     }

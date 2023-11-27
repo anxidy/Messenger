@@ -58,8 +58,8 @@ public class AccountsDAOTest {
         List<Chat> foundList = setup.getAccountsDao().getChats(1);
 
         int i = 0;
-        for (Chat found : foundList) {
-            assertEquals(found.getName(), setup.getChatList().get(i).getName());
+        for (Chat target : setup.getChatList()) {
+            assertEquals(target.getName(), foundList.get(i).getName());
             i++;
         }
     }
